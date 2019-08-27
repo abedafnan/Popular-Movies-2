@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.abedafnan.popularmovies2.R;
-import com.abedafnan.popularmovies2.models.Movie;
 import com.abedafnan.popularmovies2.models.Trailer;
 import com.squareup.picasso.Picasso;
 

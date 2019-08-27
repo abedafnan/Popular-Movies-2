@@ -1,4 +1,4 @@
-package com.abedafnan.popularmovies2.utils;
+package com.abedafnan.popularmovies2.api;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

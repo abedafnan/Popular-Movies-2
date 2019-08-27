@@ -14,7 +14,6 @@ import android.view.MenuItem;
 import com.abedafnan.popularmovies2.adapters.FavsAdapter;
 import com.abedafnan.popularmovies2.data.MovieEntity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FavoritesActivity extends AppCompatActivity {
@@ -51,7 +50,7 @@ public class FavoritesActivity extends AppCompatActivity {
         });
     }
 
-    public void setupTheList() {
+    private void setupTheList() {
         RecyclerView recyclerView = findViewById(R.id.rv_favs);
         RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(manager);

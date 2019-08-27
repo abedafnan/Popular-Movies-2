@@ -1,31 +1,34 @@
 package com.abedafnan.popularmovies2;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.abedafnan.popularmovies2.adapters.MoviesAdapter;
 import com.abedafnan.popularmovies2.adapters.ReviewsAdapter;
 import com.abedafnan.popularmovies2.adapters.TrailersAdapter;
+import com.abedafnan.popularmovies2.data.AppDatabase;
+import com.abedafnan.popularmovies2.data.MovieEntity;
 import com.abedafnan.popularmovies2.models.Movie;
-import com.abedafnan.popularmovies2.models.MovieResponse;
 import com.abedafnan.popularmovies2.models.Review;
 import com.abedafnan.popularmovies2.models.ReviewResponse;
 import com.abedafnan.popularmovies2.models.Trailer;
 import com.abedafnan.popularmovies2.models.TrailerResponse;
-import com.abedafnan.popularmovies2.utils.GetDataInterface;
+import com.abedafnan.popularmovies2.api.GetDataInterface;
+import com.abedafnan.popularmovies2.utils.AppExecutors;
 import com.abedafnan.popularmovies2.utils.NetworkUtils;
-import com.abedafnan.popularmovies2.utils.RetrofitClient;
+import com.abedafnan.popularmovies2.api.RetrofitClient;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -37,6 +40,7 @@ import retrofit2.Response;
 
 public class DetailsActivity extends AppCompatActivity {
 
+    private FloatingActionButton fab;
     private Movie mMovie;
 
     private List<Trailer> mTrailers;
@@ -45,11 +49,22 @@ public class DetailsActivity extends AppCompatActivity {
     private TrailersAdapter mTrailerAdapter;
     private ReviewsAdapter mReviewAdapter;
 
+    private AppDatabase mDatabase;
+    private List<MovieEntity> favoriteMovies;
+    private MovieEntity mMovieToDelete;
+
+    private static final String API_KEY = "60d6077e40444750fdb653f8417c66cb";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
+        mDatabase = AppDatabase.getInstance(this.getApplication());
+
+        fab = findViewById(R.id.fav_fab);
+
+        // Get the intent from MainActivity
         Intent intent = getIntent();
         if (intent != null) {
             mMovie = (Movie) intent.getSerializableExtra("Movie");
@@ -65,9 +80,24 @@ public class DetailsActivity extends AppCompatActivity {
         // Load Trailers and Reviews
         showTrailers(mMovie.getId());
         showReviews(mMovie.getId());
+
+        setUpViewModel();
     }
 
-    public void populateUI(Movie movie) {
+    private void setUpViewModel() {
+        // Declare a ViewModel variable and initialize it
+        MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        viewModel.getFavourites().observe(this, new Observer<List<MovieEntity>>() {
+            @Override
+            public void onChanged(@Nullable final List<MovieEntity> taskEntries) {
+                // Store the list of favorite movies to be used in
+                // finding out if the movie is a favorite
+                favoriteMovies = taskEntries;
+            }
+        });
+    }
+
+    private void populateUI(Movie movie) {
         ImageView poster = findViewById(R.id.iv_movie_poster);
         TextView title = findViewById(R.id.tv_movie_title);
         TextView date = findViewById(R.id.tv_release_date);
@@ -85,7 +115,49 @@ public class DetailsActivity extends AppCompatActivity {
 
     // Will be called when the favourite button is clicked
     public void favourite(View view) {
+        if (isFavorite()) {
+            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    mDatabase.getDao().deleteFav(mMovieToDelete);
+                }
+            });
 
+            Toast.makeText(DetailsActivity.this,
+                    "Removed from favorites", Toast.LENGTH_SHORT).show();
+
+        } else {
+            String title = mMovie.getOriginalTitle();
+            int id = mMovie.getId();
+            final MovieEntity newFav = new MovieEntity(id, title);
+
+            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    mDatabase.getDao().insertFav(newFav);
+                }
+            });
+
+            Toast.makeText(DetailsActivity.this,
+                    "Added to favorites", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private boolean isFavorite() {
+        if (favoriteMovies != null) {
+            Log.e("List<MovieEntity>", "GOOD");
+            for (int i = 0; i < favoriteMovies.size(); i++) {
+                // The movie id exist in the favorites list
+                if (favoriteMovies.get(i).getId() == mMovie.getId()) {
+                    mMovieToDelete = favoriteMovies.get(i);
+                    return true;
+                }
+            }
+        } else {
+            Log.e("List<MovieEntity>", "favs is null");
+        }
+
+        return false;
     }
 
     private void generateTrailersList() {
@@ -121,7 +193,7 @@ public class DetailsActivity extends AppCompatActivity {
     private void showTrailers(int id) {
         if (NetworkUtils.hasNetworkConnection(this)) {
             GetDataInterface service = RetrofitClient.getRetrofitInstance().create(GetDataInterface.class);
-            Call<TrailerResponse> call = service.getMovieTrailers(id, Constants.API_KEY);
+            Call<TrailerResponse> call = service.getMovieTrailers(id, API_KEY);
             call.enqueue(new Callback<TrailerResponse>() {
                 @Override
                 public void onResponse(Call<TrailerResponse> call, Response<TrailerResponse> response) {
@@ -131,8 +203,6 @@ public class DetailsActivity extends AppCompatActivity {
                         mTrailers.clear();
                         mTrailers.addAll(trailerResponse.getResults());
                         mTrailerAdapter.notifyDataSetChanged();
-                    } else {
-                        Log.d("NETWORK", "NULL response");
                     }
 
                 }
@@ -151,7 +221,7 @@ public class DetailsActivity extends AppCompatActivity {
     private void showReviews(int id) {
         if (NetworkUtils.hasNetworkConnection(this)) {
             GetDataInterface service = RetrofitClient.getRetrofitInstance().create(GetDataInterface.class);
-            Call<ReviewResponse> call = service.getMovieReviews(id, Constants.API_KEY);
+            Call<ReviewResponse> call = service.getMovieReviews(id, API_KEY);
             call.enqueue(new Callback<ReviewResponse>() {
                 @Override
                 public void onResponse(Call<ReviewResponse> call, Response<ReviewResponse> response) {
@@ -161,8 +231,6 @@ public class DetailsActivity extends AppCompatActivity {
                         mReviews.clear();
                         mReviews.addAll(reviewResponse.getResults());
                         mReviewAdapter.notifyDataSetChanged();
-                    } else {
-                        Log.d("NETWORK", "NULL response");
                     }
 
                 }

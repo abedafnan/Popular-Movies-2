@@ -5,13 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.abedafnan.popularmovies2.R;
 import com.abedafnan.popularmovies2.models.Review;
-import com.abedafnan.popularmovies2.models.Trailer;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 

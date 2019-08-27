@@ -17,9 +17,9 @@ import android.widget.Toast;
 import com.abedafnan.popularmovies2.adapters.MoviesAdapter;
 import com.abedafnan.popularmovies2.models.Movie;
 import com.abedafnan.popularmovies2.models.MovieResponse;
-import com.abedafnan.popularmovies2.utils.GetDataInterface;
+import com.abedafnan.popularmovies2.api.GetDataInterface;
 import com.abedafnan.popularmovies2.utils.NetworkUtils;
-import com.abedafnan.popularmovies2.utils.RetrofitClient;
+import com.abedafnan.popularmovies2.api.RetrofitClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnI
     private ProgressBar mProgressBar;
     private MoviesAdapter mAdapter;
     private List<Movie> mMovies;
+
+    private static final String API_KEY = "?api_key=60d6077e40444750fdb653f8417c66cb";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnI
 
         if (NetworkUtils.hasNetworkConnection(this)) {
             GetDataInterface service = RetrofitClient.getRetrofitInstance().create(GetDataInterface.class);
-            Call<MovieResponse> call = service.getPopularMovies(Constants.API_KEY);
+            Call<MovieResponse> call = service.getPopularMovies(API_KEY);
             call.enqueue(new Callback<MovieResponse>() {
                 @Override
                 public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
@@ -95,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnI
 
         if (NetworkUtils.hasNetworkConnection(this)) {
             GetDataInterface service = RetrofitClient.getRetrofitInstance().create(GetDataInterface.class);
-            Call<MovieResponse> call = service.getTopRatedMovies(Constants.API_KEY);
+            Call<MovieResponse> call = service.getTopRatedMovies(API_KEY);
             call.enqueue(new Callback<MovieResponse>() {
                 @Override
                 public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
@@ -156,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnI
         return false;
     }
 
-    public void goToFavourites() {
+    private void goToFavourites() {
         Intent intent = new Intent(this, FavoritesActivity.class);
         startActivity(intent);
     }

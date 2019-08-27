@@ -1,4 +1,4 @@
-package com.abedafnan.popularmovies2.utils;
+package com.abedafnan.popularmovies2.api;
 
 import com.abedafnan.popularmovies2.models.MovieResponse;
 import com.abedafnan.popularmovies2.models.ReviewResponse;

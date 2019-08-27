@@ -4,7 +4,8 @@
     android:layout_width="250dp"
     android:layout_height="150dp"
     android:background="@color/colorDark2"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_marginEnd="@dimen/horizontal_margin">
 
     <TextView
         android:id="@+id/tv_review_author"
@@ -13,7 +14,7 @@
         android:layout_margin="@dimen/horizontal_margin_short"
         android:maxLines="1"
         android:textColor="@color/colorTextPrimary"
-        android:textSize="24sp"
+        android:textSize="20sp"
         tools:text="Placeholder name" />
 
     <TextView
@@ -23,6 +24,7 @@
         android:layout_marginStart="@dimen/vertical_margin_short"
         android:layout_marginEnd="@dimen/vertical_margin_short"
         android:layout_marginBottom="@dimen/horizontal_margin_short"
+        android:maxLines="5"
         android:textColor="@color/colorTextSecondary"
         tools:text="placeholder placeholder placeholder placeholder placeholder placeholder placeholder placeholder placeholder placeholder placeholder placeholder placeholder placeholder " />
 
