@@ -89,4 +89,8 @@ public class Movie implements Serializable {
     public void setVoteAverage(Double voteAverage) {
         this.voteAverage = voteAverage;
     }
+
+    public Integer getId() {
+        return id;
+    }
 }
