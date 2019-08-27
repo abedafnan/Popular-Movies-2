@@ -53,7 +53,7 @@ public class DetailsActivity extends AppCompatActivity {
     private List<MovieEntity> favoriteMovies;
     private MovieEntity mMovieToDelete;
 
-    private static final String API_KEY = "60d6077e40444750fdb653f8417c66cb";
+    private static final String API_KEY = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
