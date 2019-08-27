@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnI
     private MoviesAdapter mAdapter;
     private List<Movie> mMovies;
 
-    private static final String API_KEY = "?api_key=60d6077e40444750fdb653f8417c66cb";
+    private static final String API_KEY = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
