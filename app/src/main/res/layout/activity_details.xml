@@ -19,6 +19,7 @@
                 android:id="@+id/iv_movie_poster"
                 android:layout_width="match_parent"
                 android:layout_height="260dp"
+                android:background="@color/colorDark2"
                 android:contentDescription="@string/poster_description"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

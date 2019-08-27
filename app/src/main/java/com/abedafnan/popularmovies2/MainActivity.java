@@ -149,8 +149,16 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnI
         if (id == R.id.action_sort) {
             sort();
             return true;
+        } else if (id == R.id.action_fav) {
+            goToFavourites();
+            return true;
         }
         return false;
+    }
+
+    public void goToFavourites() {
+        Intent intent = new Intent(this, FavoritesActivity.class);
+        startActivity(intent);
     }
 
     // Display a dialog to sort movies by most popular or top rated

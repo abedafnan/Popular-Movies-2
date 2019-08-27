@@ -131,8 +131,10 @@ public class DetailsActivity extends AppCompatActivity {
                         mTrailers.clear();
                         mTrailers.addAll(trailerResponse.getResults());
                         mTrailerAdapter.notifyDataSetChanged();
+                    } else {
+                        Log.d("NETWORK", "NULL response");
                     }
-                    Log.d("NETWORK", "NULL response");
+
                 }
 
                 @Override
@@ -159,8 +161,10 @@ public class DetailsActivity extends AppCompatActivity {
                         mReviews.clear();
                         mReviews.addAll(reviewResponse.getResults());
                         mReviewAdapter.notifyDataSetChanged();
+                    } else {
+                        Log.d("NETWORK", "NULL response");
                     }
-                    Log.d("NETWORK", "NULL response");
+
                 }
 
                 @Override

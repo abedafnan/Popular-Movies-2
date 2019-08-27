@@ -7,8 +7,14 @@
     <item
         android:id="@+id/action_sort"
         android:orderInCategory="100"
-        android:title="SortBy"
+        android:title="@string/menu_sort"
         android:icon="@drawable/ic_sort_white_24dp"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_fav"
+        android:orderInCategory="200"
+        android:title="@string/menu_fav"
+        app:showAsAction="never" />
 
 </menu>

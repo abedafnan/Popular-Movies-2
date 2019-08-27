@@ -7,4 +7,7 @@
     <string name="string_synopsis">Synopsis:</string>
     <string name="string_trailers">Trailers:</string>
     <string name="string_reviews">Reviews:</string>
+
+    <string name="menu_fav">Favourites</string>
+    <string name="menu_sort">SortBy</string>
 </resources>
